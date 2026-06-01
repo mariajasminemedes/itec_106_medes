@@ -48,14 +48,17 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('/force-migrate-xyz', function () {
     try {
-        // 1. Clear out the frozen configuration cache memory
+        // Clear caches completely
         \Artisan::call('config:clear');
         \Artisan::call('cache:clear');
         
-        // 2. Force the migration to run directly into MySQL
-        \Artisan::call('migrate:fresh', ['--force' => true]);
+        // Explicitly force connection to 'mysql' database configuration block
+        \Artisan::call('migrate:fresh', [
+            '--database' => 'mysql',
+            '--force' => true
+        ]);
         
-        return 'Database wiped and migrated successfully! Go check Railway now!';
+        return 'Database wiped and migrated forcefully to MySQL! Check Railway!';
     } catch (\Exception $e) {
         return 'Error: ' . $e->getMessage();
     }
