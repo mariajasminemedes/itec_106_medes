@@ -24,7 +24,7 @@ class AuthController extends Controller
         'phone' => ['nullable', 'string', 'max:20'],
         'address' => ['nullable', 'string'],
         'gender' => ['nullable', 'in:Male,Female,Other'],
-        'date_of_birth' => ['nullable', 'date'],
+        'date_of_birth' => ['date'],
     ]);
 
     // Create and save the new user record into your database
