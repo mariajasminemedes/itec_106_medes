@@ -38,12 +38,9 @@ class AuthController extends Controller
         'date_of_birth' => $request->date_of_birth,
         'profile_picture' => 'default-avatar.png', // Fallback default image from your schema
     ]);
-
-    // Automatically log the new user in
-    Auth::login($user);
-
+    
     // Redirect to the dashboard with a success toast message
-    return redirect()->route('dashboard')
+    return redirect()->route('login')
         ->with('toast_message', 'Account created successfully! Welcome, ' . $user->username . '!')
         ->with('toast_type', 'success');
 }
