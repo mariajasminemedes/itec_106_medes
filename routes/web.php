@@ -51,10 +51,10 @@ Route::get('/force-migrate-xyz', function () {
         \Artisan::call('config:clear');
         \Artisan::call('cache:clear');
         
-        // Safe migration: It looks for files you have that aren't in the database yet
-        \Artisan::call('migrate', ['--force' => true]);
+        // This will drop everything and completely build all tables fresh
+        \Artisan::call('migrate:fresh', ['--force' => true]);
         
-        return 'Missing tables built successfully!';
+        return 'Database completely rebuilt with all tables successfully!';
     } catch (\Exception $e) {
         return 'Error: ' . $e->getMessage();
     }
