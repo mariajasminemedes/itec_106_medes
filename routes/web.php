@@ -48,22 +48,12 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('/force-migrate-xyz', function () {
     try {
-        // Clear caches completely
         \Artisan::call('config:clear');
         \Artisan::call('cache:clear');
         
+        // Safe migration: It looks for files you have that aren't in the database yet
         \Artisan::call('migrate', ['--force' => true]);
-        // Explicitly force connection to 'mysql' database configuration block
-        \Artisan::call('migrate:fresh', [
-            '--database' => 'mysql',
-            '--force' => true
-            
-        ]);
         
-        return 'Database wiped and migrated forcefully to MySQL! Check Railway!';
-    } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage();
-
         return 'Missing tables built successfully!';
     } catch (\Exception $e) {
         return 'Error: ' . $e->getMessage();
