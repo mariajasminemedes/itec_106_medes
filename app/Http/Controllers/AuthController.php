@@ -28,10 +28,10 @@ class AuthController extends Controller
     ]);
 
     // Create and save the new user record into your database
-    $user = App\Models\User::create([
+    $user = \App\Models\User::create([
         'username' => $request->username,
         'email' => $request->email,
-        'password' => Hash::make($request->password), // Automatically encrypts the password securely
+        'password' => \Hash::make($request->password), // Automatically encrypts the password securely
         'phone' => $request->phone,
         'address' => $request->address,
         'gender' => $request->gender,
