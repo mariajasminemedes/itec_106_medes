@@ -46,3 +46,11 @@ Route::middleware(['auth'])->group(function () {
     // Delete Route (Removes record from db)
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
 });
+Route::get('/force-migrate-xyz', function () {
+    try {
+        Artisan::call('migrate:fresh', ['--force' => true]);
+        return 'Database migrated successfully! Go check Railway!';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
