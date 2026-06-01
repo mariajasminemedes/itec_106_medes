@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +28,7 @@ class AuthController extends Controller
     ]);
 
     // Create and save the new user record into your database
-    $user = User::create([
+    $user = App\Models\User::create([
         'username' => $request->username,
         'email' => $request->email,
         'password' => Hash::make($request->password), // Automatically encrypts the password securely
