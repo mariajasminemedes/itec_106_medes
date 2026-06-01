@@ -15,6 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('status')->default('Pending');
+            $table->string('customer_name');
+            $table->string('jewelry_item');
+            $table->integer('quantity');
+            $table->decimal('price', 10, 2);
+            $table->decimal('total_price', 10, 2);
+            $table->string('status', 50)->default('Pending');
+            $table->timestamp('order_date')->useCurrent();
             $table->timestamps();
         });
     }
