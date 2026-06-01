@@ -12,17 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('status')->default('Pending');
-            $table->string('customer_name');
-            $table->string('jewelry_item');
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2);
-            $table->decimal('total_price', 10, 2);
-            $table->string('status', 50)->default('Pending');
-            $table->timestamp('order_date')->useCurrent();
-            $table->timestamps();
+        $table->id();
+        $table->unsignedBigInteger('user_id')->nullable();
+        $table->string('customer_name');
+        $table->string('jewelry_item');
+        $table->integer('quantity');
+        $table->decimal('price', 10, 2);
+        $table->decimal('total_price', 10, 2);
+        $table->string('status', 50)->default('Pending');
+        
+        // This explicitly creates the precise order_date column your query is sorting by!
+        $table->timestamp('order_date')->useCurrent();
+        
+        $table->timestamps();
+
+        // Foreign key relation
+        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
