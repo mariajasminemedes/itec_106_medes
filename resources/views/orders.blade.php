@@ -6,7 +6,7 @@
     <title>Orders - Jewelry Order System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -68,6 +68,7 @@
             border: 1px solid #e2e8f0; 
             border-radius: 16px; 
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
         }
 
         .table > :not(caption) > * > * {
@@ -93,6 +94,31 @@
             justify-content: center; 
             border-radius: 8px; 
             transition: all 0.2s; 
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        .search-wrapper .form-control {
+            padding-left: 44px;
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .search-wrapper .form-control:focus {
+            background-color: #ffffff;
         }
 
         .form-label {
@@ -187,70 +213,64 @@
 
 <div class="main-content">
     
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-5 gap-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3">
         <div>
             <h2 class="fw-bold tracking-tight mb-1" style="color: #0f172a;">Manage Orders Ledger</h2>
             <p class="text-muted mb-0">Monitor active client pipeline records and dispatch updates instantly.</p>
         </div>
-        <button type="button" class="btn btn-indigo px-4 py-2 text-white shadow-sm fw-semibold" style="background-color: #4f46e5; border-color: #4f46e5;" data-bs-toggle="modal" data-bs-target="#addOrderModal">
-            <i class="fas fa-plus me-2"></i>Add New Order
-        </button>
+        <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3 w-100 w-md-auto">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="globalSearchInput" class="form-control" placeholder="Search customer or item...">
+            </div>
+            <button type="button" class="btn btn-indigo px-4 py-2 text-white shadow-sm fw-semibold" style="background-color: #4f46e5; border-color: #4f46e5; min-width: 160px;" data-bs-toggle="modal" data-bs-target="#addOrderModal">
+                <i class="fas fa-plus me-2"></i>Add New Order
+            </button>
+        </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm">
+    <div class="row g-4">
+        
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
                 <div class="card-header bg-white py-4 px-4 border-bottom-0 d-flex align-items-center justify-content-between">
-                    <h5 class="m-0 fw-bold text-dark"><i class="fas fa-table me-2 text-muted"></i>Orders Ledger Directory</h5>
-                    <span class="text-muted small">Live Data Stream</span>
+                    <h5 class="m-0 fw-bold text-dark"><i class="fas fa-receipt me-2 text-muted"></i>Transaction Details</h5>
+                    <span class="badge bg-slate text-muted border px-2 py-1 small">Sales Log</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
+                        <table class="table table-hover mb-0 align-middle" id="transactionsTable">
                             <thead class="table-light text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.8px;">
                                 <tr>
                                     <th class="ps-4 text-muted py-3">Customer Name</th>
                                     <th class="text-muted py-3">Jewelry Item</th>
-                                    <th class="text-muted py-3">Qty</th>
-                                    <th class="text-muted py-3">Unit Price</th>
+                                    <th class="text-muted py-3 text-center">Qty</th>
                                     <th class="text-muted py-3">Total Gross</th>
-                                    <th class="text-muted py-3">Status</th>
-                                    <th class="text-muted py-3">Order Date</th>
                                     <th class="text-end pe-4 text-muted py-3">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($orders as $order)
-                                    <tr>
+                                    <tr class="order-row-item" data-search-string="{{ strtolower($order->customer_name . ' ' . $order->jewelry_item) }}">
                                         <td class="ps-4">
                                             <div class="d-flex align-items-center">
                                                 <div class="p-2 rounded-circle me-3 text-center" style="background-color: #f1f5f9; color: #4f46e5; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
                                                     <i class="fas fa-user-tie small"></i>
                                                 </div>
-                                                <span class="fw-semibold text-dark">{{ $order->customer_name }}</span>
+                                                <span class="fw-semibold text-dark text-truncate" style="max-width: 140px;">{{ $order->customer_name }}</span>
                                             </div>
                                         </td>
                                         <td>
                                             <span class="text-dark fw-semibold"><i class="fas fa-crown text-muted me-1 small"></i>{{ $order->jewelry_item }}</span>
                                         </td>
-                                        <td><span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium">{{ $order->quantity }} pcs</span></td>
-                                        <td class="text-muted small">₱{{ number_format($order->price, 2) }}</td>
-                                        <td class="text-dark fw-semibold">₱{{ number_format($order->total_price, 2) }}</td>
-                                        <td>
-                                            <span class="badge-custom text-uppercase d-inline-block" style="
-                                                {{ $order->status == 'Pending' ? 'background-color: #fef3c7; color: #d97706;' : '' }}
-                                                {{ $order->status == 'Processing' ? 'background-color: #e0f2fe; color: #0284c7;' : '' }}
-                                                {{ $order->status == 'Completed' ? 'background-color: #dcfce7; color: #16a34a;' : '' }}
-                                                {{ $order->status == 'Cancelled' ? 'background-color: #fee2e2; color: #dc2626;' : '' }}">
-                                                {{ $order->status }}
-                                            </span>
+                                        <td class="text-center">
+                                            <span class="badge bg-light text-secondary border px-2 py-1 fw-medium">{{ $order->quantity }} pcs</span>
                                         </td>
-                                        <td class="text-muted small">{{ date('M d, Y • h:i A', strtotime($order->order_date)) }}</td>
+                                        <td class="text-dark fw-bold">₱{{ number_format($order->total_price, 2) }}</td>
                                         <td class="text-end pe-4">
                                             <a href="/orders/{{ $order->id }}/edit" class="btn btn-outline-secondary action-btn me-1 border-light-subtle text-muted" title="Edit Order" style="background: #f8fafc;">
                                                 <i class="fas fa-edit small"></i>
                                             </a>
-                                            
                                             <form action="/orders/{{ $order->id }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this order?');">
                                                 @csrf
                                                 @method('DELETE')
@@ -261,11 +281,10 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center py-5 text-muted">
+                                    <tr class="empty-placeholder-row">
+                                        <td colspan="5" class="text-center py-5 text-muted">
                                             <div class="mb-3"><i class="fas fa-inbox fa-3x text-black-50" style="opacity: 0.25;"></i></div>
-                                            <h6 class="fw-semibold text-dark">No orders found</h6>
-                                            <p class="text-muted small mb-0">Click the "Add New Order" button to append a record to your database.</p>
+                                            <h6 class="fw-semibold text-dark">No records found</h6>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -275,6 +294,67 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white py-4 px-4 border-bottom-0 d-flex align-items-center justify-content-between">
+                    <h5 class="m-0 fw-bold text-dark"><i class="fas fa-truck me-2 text-muted"></i>Fulfillment & Pipeline</h5>
+                    <span class="text-muted small">Live Status</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle" id="logisticsTable">
+                            <thead class="table-light text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.8px;">
+                                <tr>
+                                    <th class="ps-4 text-muted py-3">Status Pipeline</th>
+                                    <th class="text-muted py-3">Order Log Date</th>
+                                    <th class="text-end pe-4 text-muted py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($orders as $order)
+                                    <tr class="order-row-item" data-search-string="{{ strtolower($order->customer_name . ' ' . $order->jewelry_item) }}">
+                                        <td class="ps-4">
+                                            <span class="badge-custom text-uppercase d-inline-block" style="
+                                                {{ $order->status == 'Pending' ? 'background-color: #fef3c7; color: #d97706;' : '' }}
+                                                {{ $order->status == 'Processing' ? 'background-color: #e0f2fe; color: #0284c7;' : '' }}
+                                                {{ $order->status == 'Completed' ? 'background-color: #dcfce7; color: #16a34a;' : '' }}
+                                                {{ $order->status == 'Cancelled' ? 'background-color: #fee2e2; color: #dc2626;' : '' }}">
+                                                {{ $order->status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-muted small">
+                                            <span class="d-block fw-medium text-dark">{{ date('M d, Y', strtotime($order->order_date)) }}</span>
+                                            <span class="text-muted text-xs">{{ date('h:i A', strtotime($order->order_date)) }}</span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <a href="/orders/{{ $order->id }}/edit" class="btn btn-outline-secondary action-btn me-1 border-light-subtle text-muted" title="Edit Order" style="background: #f8fafc;">
+                                                <i class="fas fa-edit small"></i>
+                                            </a>
+                                            <form action="/orders/{{ $order->id }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this order?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger action-btn border-light-subtle" title="Delete Order" style="background: #f8fafc; color: #ef4444;">
+                                                    <i class="fas fa-trash-alt small"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr class="empty-placeholder-row">
+                                        <td colspan="3" class="text-center py-5 text-muted">
+                                            <div class="mb-3"><i class="fas fa-history fa-3x text-black-50" style="opacity: 0.25;"></i></div>
+                                            <h6 class="fw-semibold text-dark">No pipeline histories</h6>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -381,6 +461,33 @@
         const dynamicTotal = unitPrice * quantity;
         totalGrossDisplay.value = dynamicTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
+
+    /**
+     * Synchronous Instant Filtering Search Utility Engine 
+     * Filters matching records on both tables simultaneously based on user input
+     */
+    document.getElementById('globalSearchInput').addEventListener('input', function(e) {
+        const queryValue = e.target.value.toLowerCase().trim();
+        const rowItems = document.querySelectorAll('.order-row-item');
+        
+        // Tracking variables to show custom empty state placeholder rows if needed
+        let leftVisibleCount = 0;
+        let rightVisibleCount = 0;
+
+        rowItems.forEach(row => {
+            const indexValue = row.getAttribute('data-search-string') || '';
+            const isMatch = indexValue.includes(queryValue);
+            
+            if(isMatch || queryValue === '') {
+                row.style.setProperty('display', '', 'important');
+                // Increment counters depending on which table container row belongs to
+                if(row.closest('#transactionsTable')) leftVisibleCount++;
+                if(row.closest('#logisticsTable')) rightVisibleCount++;
+            } else {
+                row.style.setProperty('display', 'none', 'important');
+            }
+        });
+    });
 </script>
 </body>
 </html>
