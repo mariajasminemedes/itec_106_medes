@@ -75,6 +75,31 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.01);
         }
 
+        /* Modern Form Inputs for Search Bar */
+        .search-input-group {
+            max-width: 450px;
+        }
+        .search-input-group .form-control {
+            border-radius: 10px;
+            padding: 11px 16px 11px 42px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.92rem;
+            background-color: #ffffff;
+        }
+        .search-input-group .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        .search-icon-wrapper {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
         .table > :not(caption) > * > * {
             padding: 16px 16px;
             border-bottom-color: #f1f5f9;
@@ -186,14 +211,18 @@
 
 <div class="main-content">
     
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-5 gap-3">
-        <div>
-            <h2 class="fw-bold tracking-tight mb-1" style="color: #0f172a;">Orders Console</h2>
-            <p class="text-muted mb-0">Track customer production lifecycle events and processing pipelines in real-time.</p>
+    <div class="mb-5">
+        <h2 class="fw-bold tracking-tight mb-1" style="color: #0f172a;">Orders Console</h2>
+        <p class="text-muted mb-0">Track customer production lifecycle events and processing pipelines in real-time.</p>
+    </div>
+
+    <div class="mb-4">
+        <div class="position-relative search-input-group">
+            <div class="search-icon-wrapper">
+                <i class="fas fa-search"></i>
+            </div>
+            <input type="text" id="orderSearchInput" class="form-control" placeholder="Search customer records or item specifications...">
         </div>
-        <a href="/orders/create" class="btn btn-primary px-4 py-2.5 shadow-sm fw-semibold d-flex align-items-center gap-2" style="background-color: #4f46e5; border-color: #4f46e5; border-radius: 10px;">
-            <i class="fas fa-plus-circle"></i>Add New Order
-        </a>
     </div>
 
     <div class="row g-4">
@@ -209,10 +238,11 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
+                        <table class="table table-hover mb-0 align-middle" id="ordersDataTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="ps-4 py-3">Jewelry Item</th>
+                                    <th class="ps-4 py-3">Customer Name</th>
+                                    <th class="py-3">Jewelry Item</th>
                                     <th class="py-3 text-center">Qty</th>
                                     <th class="py-3 text-end">Unit Price</th>
                                     <th class="py-3 text-end">Total Gross</th>
@@ -223,9 +253,19 @@
                             </thead>
                             <tbody>
                                 @forelse($orders as $order)
-                                    <tr>
+                                    <tr class="order-row-item">
                                         <td class="ps-4">
-                                            <span class="text-dark fw-semibold" style="font-size: 0.88rem;">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold" style="width: 32px; height: 32px; background-color: #f1f5f9; color: #4f46e5 !important; font-size: 0.8rem;">
+                                                    {{ strtoupper(substr($order->customer_name, 0, 2)) }}
+                                                </div>
+                                                <span class="text-dark fw-bold customer-name-text" style="font-size: 0.88rem;">
+                                                    {{ $order->customer_name }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="text-secondary fw-semibold item-classification-text" style="font-size: 0.88rem;">
                                                 <i class="fas fa-crown text-muted me-1.5 small"></i>{{ $order->jewelry_item }}
                                             </span>
                                         </td>
@@ -271,11 +311,11 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-5 text-muted">
+                                    <tr class="no-records-row">
+                                        <td colspan="8" class="text-center py-5 text-muted">
                                             <div class="mb-3"><i class="fas fa-inbox fa-3x text-black-50" style="opacity: 0.15;"></i></div>
                                             <h6 class="fw-semibold text-dark">No orders found</h6>
-                                            <p class="text-muted small mb-0">Click "Add New Order" to create a pipeline record.</p>
+                                            <p class="text-muted small mb-0">Click "Add New Order" in the navigation panel to append a record.</p>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -298,6 +338,23 @@
     @if(session('toast_message'))
         toastr.{{ session('toast_type') }}('{{ session('toast_message') }}');
     @endif
+
+    // Frontend live search capability for Customer Names & Items
+    document.getElementById('orderSearchInput').addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const tableRows = document.querySelectorAll('.order-row-item');
+        
+        tableRows.forEach(row => {
+            const customerName = row.querySelector('.customer-name-text').textContent.toLowerCase();
+            const itemClassification = row.querySelector('.item-classification-text').textContent.toLowerCase();
+            
+            if (customerName.includes(searchTerm) || itemClassification.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
 </script>
 </body>
 </html>
