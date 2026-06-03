@@ -70,6 +70,45 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
         }
 
+        /* Interactive Left Side Catalog Items */
+        .catalog-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .catalog-card:hover {
+            border-color: #4f46e5;
+            background-color: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.05);
+        }
+
+        .catalog-card.selected-item {
+            border-color: #4f46e5;
+            background-color: #f5f3ff;
+        }
+
+        .catalog-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .catalog-card.selected-item .catalog-icon-box {
+            background: #4f46e5;
+            color: #ffffff;
+        }
+
         .form-label { 
             font-weight: 600; 
             color: #334155; 
@@ -185,94 +224,160 @@
         <p class="text-muted mb-0">Create and store a brand new custom jewelry order entry into the system pipeline.</p>
     </div>
 
-    <div class="card shadow-sm border-0" style="max-width: 850px;">
-        <div class="card-header bg-white py-4 px-4 border-bottom-0">
-            <h5 class="m-0 fw-bold text-dark d-flex align-items-center">
-                <i class="fas fa-pen-nib me-2 text-muted" style="font-size: 1.1rem;"></i>Order Details Form
-            </h5>
-        </div>
+    <div class="row g-4">
         
-        <div class="card-body p-4 pt-0">
-            
-            @if ($errors->any())
-                <div class="alert alert-danger border-0 shadow-sm rounded-3 p-3 mb-4" style="background-color: #fee2e2; color: #991b1b;">
-                    <div class="d-flex align-items-center mb-2 fw-bold">
-                        <i class="fas fa-exclamation-circle me-2"></i> Please correct the fields below:
-                    </div>
-                    <ul class="mb-0 ps-4 small">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-4 px-4 border-bottom-0">
+                    <h5 class="m-0 fw-bold text-dark d-flex align-items-center">
+                        <i class="fas fa-images me-2 text-muted" style="font-size: 1.1rem;"></i>Available Catalog
+                    </h5>
+                    <p class="text-muted small mb-0 mt-1">Select an item category layout to autofill the request fields instantly.</p>
                 </div>
-            @endif
+                <div class="card-body p-4 pt-0">
+                    <div class="d-flex flex-column gap-3">
+                        
+                        <div class="catalog-card d-flex align-items-center justify-content-between" data-item="Ring" onclick="selectCatalogCard('Ring')">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="catalog-icon-box"><i class="fas fa-ring"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark">Luxury Ring</h6>
+                                    <small class="text-muted">Premium Bands & Settings</small>
+                                </div>
+                            </div>
+                            <span class="fw-bold text-dark">₱45,000.00</span>
+                        </div>
 
-            <form method="POST" action="{{ route('orders.store') }}">
-                @csrf
-                
-                <div class="mb-4">
-                    <label for="customer_name" class="form-label">Customer Full Name</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-user small"></i></span>
-                        <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" placeholder="Enter customer name" required>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="jewelry_item" class="form-label">Jewelry Item Classification</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-crown small"></i></span>
-                        <select class="form-select" id="jewelry_item" name="jewelry_item" onchange="updateAutomaticPrice()" required>
-                            <option value="">Select an item category</option>
-                            <option value="Ring" {{ (old('jewelry_item', request('item')) == 'Ring') ? 'selected' : '' }}>Ring</option>
-                            <option value="Necklace" {{ (old('jewelry_item', request('item')) == 'Necklace') ? 'selected' : '' }}>Necklace</option>
-                            <option value="Bracelet" {{ (old('jewelry_item', request('item')) == 'Bracelet') ? 'selected' : '' }}>Bracelet</option>
-                            <option value="Earrings" {{ (old('jewelry_item', request('item')) == 'Earrings') ? 'selected' : '' }}>Earrings</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="row g-3 mb-4">
-                    <div class="col-12 col-md-4">
-                        <label for="quantity" class="form-label">Quantity (pcs)</label>
-                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="{{ old('quantity', 1) }}" oninput="calculateGrossTotal()" required>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <label for="price" class="form-label">Unit Price (₱)</label>
-                        <div class="input-group">
-                            <span class="input-group-text fw-semibold" style="border-right: 1px solid #cbd5e1; border-top-right-radius: 0; border-bottom-right-radius: 0;">₱</span>
-                            <input type="number" class="form-control" id="price" name="price" step="0.01" value="{{ old('price', request('price')) }}" placeholder="0.00" readonly required style="border-left: 1px solid #cbd5e1; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 12px;">
+                        <div class="catalog-card d-flex align-items-center justify-content-between" data-item="Necklace" onclick="selectCatalogCard('Necklace')">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="catalog-icon-box"><i class="fas fa-gem"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark">Chains & Necklaces</h6>
+                                    <small class="text-muted">Elegant Chokers & Pendants</small>
+                                </div>
+                            </div>
+                            <span class="fw-bold text-dark">₱62,000.00</span>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <label for="total_gross" class="form-label">Total Gross Cost</label>
-                        <div class="input-group">
-                            <span class="input-group-text fw-semibold" style="border-right: 1px solid #cbd5e1; border-top-right-radius: 0; border-bottom-right-radius: 0;">₱</span>
-                            <input type="text" class="form-control" id="total_gross" readonly placeholder="0.00" style="border-left: 1px solid #cbd5e1; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 12px;">
+
+                        <div class="catalog-card d-flex align-items-center justify-content-between" data-item="Bracelet" onclick="selectCatalogCard('Bracelet')">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="catalog-icon-box"><i class="fas fa-bolt"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark">Custom Bracelet</h6>
+                                    <small class="text-muted">Bangles & Wristwear lines</small>
+                                </div>
+                            </div>
+                            <span class="fw-bold text-dark">₱15,500.00</span>
                         </div>
+
+                        <div class="catalog-card d-flex align-items-center justify-content-between" data-item="Earrings" onclick="selectCatalogCard('Earrings')">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="catalog-icon-box"><i class="fas fa-crown"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark">Classic Earrings</h6>
+                                    <small class="text-muted">Studs, Hoops, & Drop Styles</small>
+                                </div>
+                            </div>
+                            <span class="fw-bold text-dark">₱28,000.00</span>
+                        </div>
+
                     </div>
                 </div>
-                
-                <div class="mb-5">
-                    <label for="status" class="form-label">Initial System Status</label>
-                    <select class="form-select" id="status" name="status" required>
-                        <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="Processing" {{ old('status') == 'Processing' ? 'selected' : '' }}>Processing</option>
-                        <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
-                        <option value="Cancelled" {{ old('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
-                    </select>
-                </div>
-                
-                <div class="pt-4 border-top d-flex flex-wrap gap-2">
-                    <button type="submit" class="btn btn-primary px-4 py-2.5 rounded-3 fw-medium shadow-sm" style="background-color: #4f46e5; border-color: #4f46e5;">
-                        <i class="fas fa-save me-2"></i>Save Order Record
-                    </button>
-                    <a href="/orders" class="btn btn-light px-4 py-2.5 rounded-3 border text-secondary fw-medium">
-                        Cancel
-                    </a>
-                </div>
-            </form>
+            </div>
         </div>
+
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-4 px-4 border-bottom-0">
+                    <h5 class="m-0 fw-bold text-dark d-flex align-items-center">
+                        <i class="fas fa-pen-nib me-2 text-muted" style="font-size: 1.1rem;"></i>Order Details Form
+                    </h5>
+                </div>
+                
+                <div class="card-body p-4 pt-0">
+                    
+                    @if ($errors->any())
+                        <div class="alert alert-danger border-0 shadow-sm rounded-3 p-3 mb-4" style="background-color: #fee2e2; color: #991b1b;">
+                            <div class="d-flex align-items-center mb-2 fw-bold">
+                                <i class="fas fa-exclamation-circle me-2"></i> Please correct the fields below:
+                            </div>
+                            <ul class="mb-0 ps-4 small">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('orders.store') }}">
+                        @csrf
+                        
+                        <div class="mb-4">
+                            <label for="customer_name" class="form-label">Customer Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user small"></i></span>
+                                <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" placeholder="Enter customer name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="jewelry_item" class="form-label">Jewelry Item Classification</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-crown small"></i></span>
+                                <select class="form-select" id="jewelry_item" name="jewelry_item" onchange="updateAutomaticPrice()" required>
+                                    <option value="">Select an item category</option>
+                                    <option value="Ring" {{ (old('jewelry_item', request('item')) == 'Ring') ? 'selected' : '' }}>Ring</option>
+                                    <option value="Necklace" {{ (old('jewelry_item', request('item')) == 'Necklace') ? 'selected' : '' }}>Necklace</option>
+                                    <option value="Bracelet" {{ (old('jewelry_item', request('item')) == 'Bracelet') ? 'selected' : '' }}>Bracelet</option>
+                                    <option value="Earrings" {{ (old('jewelry_item', request('item')) == 'Earrings') ? 'selected' : '' }}>Earrings</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-4">
+                                <label for="quantity" class="form-label">Quantity (pcs)</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="{{ old('quantity', 1) }}" oninput="calculateGrossTotal()" required>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="price" class="form-label">Unit Price (₱)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text fw-semibold" style="border-right: 1px solid #cbd5e1; border-top-right-radius: 0; border-bottom-right-radius: 0;">₱</span>
+                                    <input type="number" class="form-control" id="price" name="price" step="0.01" value="{{ old('price', request('price')) }}" placeholder="0.00" readonly required style="border-left: 1px solid #cbd5e1; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 12px;">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="total_gross" class="form-label">Total Gross Cost</label>
+                                <div class="input-group">
+                                    <span class="input-group-text fw-semibold" style="border-right: 1px solid #cbd5e1; border-top-right-radius: 0; border-bottom-right-radius: 0;">₱</span>
+                                    <input type="text" class="form-control" id="total_gross" readonly placeholder="0.00" style="border-left: 1px solid #cbd5e1; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 12px;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-5">
+                            <label for="status" class="form-label">Initial System Status</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Processing" {{ old('status') == 'Processing' ? 'selected' : '' }}>Processing</option>
+                                <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
+                                <option value="Cancelled" {{ old('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            </select>
+                        </div>
+                        
+                        <div class="pt-4 border-top d-flex flex-wrap gap-2 justify-content-end">
+                            <a href="/orders" class="btn btn-light px-4 py-2.5 rounded-3 border text-secondary fw-medium">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 py-2.5 rounded-3 fw-medium shadow-sm" style="background-color: #4f46e5; border-color: #4f46e5;">
+                                <i class="fas fa-save me-2"></i>Save Order Record
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
     
 </div>
@@ -290,6 +395,33 @@
     };
 
     /**
+     * Interactivity Bridge: Connects Left Sidebar catalog choices to select options
+     */
+    function selectCatalogCard(itemName) {
+        const itemDropdown = document.getElementById('jewelry_item');
+        itemDropdown.value = itemName;
+        
+        // Trigger style modification handler
+        highlightActiveCard(itemName);
+        
+        // Execute primary automation logic
+        updateAutomaticPrice();
+    }
+
+    /**
+     * Toggles visually active states across the catalog containers
+     */
+    function highlightActiveCard(itemName) {
+        document.querySelectorAll('.catalog-card').forEach(card => {
+            if (card.getAttribute('data-item') === itemName) {
+                card.classList.add('selected-item');
+            } else {
+                card.classList.remove('selected-item');
+            }
+        });
+    }
+
+    /**
      * Automatically changes the unit price field based on dropdown changes
      */
     function updateAutomaticPrice() {
@@ -298,8 +430,10 @@
         
         if (selectedItem && priceCatalog[selectedItem]) {
             priceInput.value = priceCatalog[selectedItem].toFixed(2);
+            highlightActiveCard(selectedItem);
         } else if (!selectedItem) {
             priceInput.value = "";
+            document.querySelectorAll('.catalog-card').forEach(card => card.classList.remove('selected-item'));
         }
         
         calculateGrossTotal();
@@ -319,9 +453,10 @@
 
     // Initialize calculations right away when the template is rendered
     window.addEventListener('DOMContentLoaded', () => {
-        if(document.getElementById('jewelry_item').value) {
-            // If loaded with URL parameters, instantly execute structural values
+        const initialDropdownValue = document.getElementById('jewelry_item').value;
+        if(initialDropdownValue) {
             calculateGrossTotal();
+            highlightActiveCard(initialDropdownValue);
         }
     });
 </script>
