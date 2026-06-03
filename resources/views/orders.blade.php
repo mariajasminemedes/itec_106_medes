@@ -6,7 +6,7 @@
     <title>Orders Ledger - Jewelry Order System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -189,7 +189,7 @@
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-5 gap-3">
         <div>
             <h2 class="fw-bold tracking-tight mb-1" style="color: #0f172a;">Orders Console</h2>
-            <p class="text-muted mb-0">Track customer financial transactions and production lifecycle statuses side-by-side.</p>
+            <p class="text-muted mb-0">Track customer production lifecycle events and processing pipelines in real-time.</p>
         </div>
         <a href="/orders/create" class="btn btn-primary px-4 py-2.5 shadow-sm fw-semibold d-flex align-items-center gap-2" style="background-color: #4f46e5; border-color: #4f46e5; border-radius: 10px;">
             <i class="fas fa-plus-circle"></i>Add New Order
@@ -197,15 +197,14 @@
     </div>
 
     <div class="row g-4">
-        
-        <div class="col-12 col-lg-8">
+        <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-4 px-4 border-bottom-0 d-flex align-items-center justify-content-between">
                     <h5 class="m-0 fw-bold text-dark d-flex align-items-center gap-2">
-                        <i class="fas fa-file-invoice-dollar text-muted" style="font-size: 1.1rem;"></i>Transaction Ledger
+                        <i class="fas fa-file-invoice-dollar text-muted" style="font-size: 1.1rem;"></i>Master Orders Console
                     </h5>
                     <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-semibold" style="font-size: 0.75rem;">
-                        {{ count($orders) }} Active Entries
+                        {{ count($orders) }} Active Records
                     </span>
                 </div>
                 <div class="card-body p-0">
@@ -213,11 +212,12 @@
                         <table class="table table-hover mb-0 align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="ps-4 py-3">Customer Profile</th>
-                                    <th class="py-3">Jewelry Item</th>
+                                    <th class="ps-4 py-3">Jewelry Item</th>
                                     <th class="py-3 text-center">Qty</th>
                                     <th class="py-3 text-end">Unit Price</th>
                                     <th class="py-3 text-end">Total Gross</th>
+                                    <th class="py-3 text-center">Current Status</th>
+                                    <th class="py-3 text-center">Order Date &amp; Time</th>
                                     <th class="text-end pe-4 py-3">Actions</th>
                                 </tr>
                             </thead>
@@ -225,14 +225,6 @@
                                 @forelse($orders as $order)
                                     <tr>
                                         <td class="ps-4">
-                                            <div class="d-flex align-items-center">
-                                                <div class="rounded-circle me-3 text-center" style="background-color: #f1f5f9; color: #4f46e5; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                                                    <i class="fas fa-user small"></i>
-                                                </div>
-                                                <span class="fw-semibold text-dark" style="font-size: 0.9rem;">{{ $order->customer_name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
                                             <span class="text-dark fw-semibold" style="font-size: 0.88rem;">
                                                 <i class="fas fa-crown text-muted me-1.5 small"></i>{{ $order->jewelry_item }}
                                             </span>
@@ -244,6 +236,24 @@
                                         </td>
                                         <td class="text-end text-muted small fw-medium">₱{{ number_format($order->price, 2) }}</td>
                                         <td class="text-end text-dark fw-bold" style="font-size: 0.9rem;">₱{{ number_format($order->total_price, 2) }}</td>
+                                        <td class="text-center">
+                                            <span class="badge-custom text-uppercase" style="
+                                                {{ $order->status == 'Pending' ? 'background-color: #fef3c7; color: #d97706;' : '' }}
+                                                {{ $order->status == 'Processing' ? 'background-color: #e0f2fe; color: #0284c7;' : '' }}
+                                                {{ $order->status == 'Completed' ? 'background-color: #dcfce7; color: #16a34a;' : '' }}
+                                                {{ $order->status == 'Cancelled' ? 'background-color: #fee2e2; color: #dc2626;' : '' }}">
+                                                <i class="fas fa-circle" style="font-size: 0.45rem; opacity: 0.75;"></i>
+                                                {{ $order->status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-muted small fw-medium d-block" style="font-size: 0.8rem;">
+                                                {{ date('M d, Y', strtotime($order->order_date)) }}
+                                            </span>
+                                            <span class="text-black-50 d-block" style="font-size: 0.7rem;">
+                                                {{ date('h:i A', strtotime($order->order_date)) }}
+                                            </span>
+                                        </td>
                                         <td class="text-end pe-4">
                                             <div class="d-flex justify-content-end gap-1">
                                                 <a href="/orders/{{ $order->id }}/edit" class="btn btn-sm btn-outline-secondary action-btn border-light-subtle text-muted" title="Modify Record" style="background: #f8fafc;">
@@ -262,10 +272,10 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-5 text-muted">
+                                        <td colspan="7" class="text-center py-5 text-muted">
                                             <div class="mb-3"><i class="fas fa-inbox fa-3x text-black-50" style="opacity: 0.15;"></i></div>
                                             <h6 class="fw-semibold text-dark">No orders found</h6>
-                                            <p class="text-muted small mb-0">Click "Add New Order" to create a record.</p>
+                                            <p class="text-muted small mb-0">Click "Add New Order" to create a pipeline record.</p>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -275,65 +285,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-12 col-lg-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-4 px-4 border-bottom-0">
-                    <h5 class="m-0 fw-bold text-dark d-flex align-items-center gap-2">
-                        <i class="fas fa-business-time text-muted" style="font-size: 1.1rem;"></i>Status &amp; Timeline Tracking
-                    </h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-4 py-3">Target Profile</th>
-                                    <th class="py-3">Current Status</th>
-                                    <th class="pe-4 py-3 text-end">Order Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($orders as $order)
-                                    <tr>
-                                        <td class="ps-4">
-                                            <span class="fw-semibold text-secondary small d-block text-truncate" style="max-width: 110px;">
-                                                {{ $order->customer_name }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge-custom text-uppercase" style="
-                                                {{ $order->status == 'Pending' ? 'background-color: #fef3c7; color: #d97706;' : '' }}
-                                                {{ $order->status == 'Processing' ? 'background-color: #e0f2fe; color: #0284c7;' : '' }}
-                                                {{ $order->status == 'Completed' ? 'background-color: #dcfce7; color: #16a34a;' : '' }}
-                                                {{ $order->status == 'Cancelled' ? 'background-color: #fee2e2; color: #dc2626;' : '' }}">
-                                                <i class="fas fa-circle" style="font-size: 0.45rem; opacity: 0.75;"></i>
-                                                {{ $order->status }}
-                                            </span>
-                                        </td>
-                                        <td class="pe-4 text-end">
-                                            <span class="text-muted small fw-medium d-block" style="font-size: 0.8rem;">
-                                                {{ date('M d, Y', strtotime($order->order_date)) }}
-                                            </span>
-                                            <span class="text-black-50 d-block" style="font-size: 0.7rem;">
-                                                {{ date('h:i A', strtotime($order->order_date)) }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="text-center py-5 text-muted small">
-                                            No pipeline events to stream.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 
