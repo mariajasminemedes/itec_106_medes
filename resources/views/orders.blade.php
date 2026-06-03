@@ -94,38 +94,26 @@
             border-radius: 8px; 
             transition: all 0.2s; 
         }
-        
-        /* Item Catalog Display Designs */
-        .item-card { 
-            transition: transform 0.2s ease, box-shadow 0.2s ease; 
-            border: 1px solid #e2e8f0; 
-            overflow: hidden;
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .item-card:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.04); 
+
+        .form-control, .form-select, .input-group-text {
+            border-radius: 10px;
+            padding: 10px 16px;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            font-size: 0.95rem;
         }
-        .item-img-wrapper { 
-            height: 140px; 
-            overflow: hidden; 
-            position: relative; 
-            background-color: #f1f5f9; 
-        }
-        .item-img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-        }
-        .item-category { 
-            position: absolute; 
-            top: 10px; 
-            left: 10px; 
-            font-size: 0.65rem; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-            padding: 4px 8px;
-            border-radius: 6px;
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
         /* Responsive Adaptations */
@@ -142,7 +130,6 @@
 </head>
 <body>
 
-<!-- DESKTOP FIXED NAVIGATION SIDEBAR -->
 <div class="sidebar d-none d-lg-flex flex-column justify-content-between">
     <div>
         <div class="p-4 border-bottom border-light">
@@ -168,7 +155,6 @@
     </div>
 </div>
 
-<!-- CONTAINER MOBILE ACTIONS ACCESSIBILITY BAR -->
 <nav class="navbar navbar-light bg-white border-bottom d-lg-none px-3 sticky-top w-100 shadow-sm">
     <span class="navbar-brand fw-bold text-dark"><i class="fas fa-gem me-2 text-indigo" style="color: #4f46e5;"></i>Jewelry Shop</span>
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
@@ -176,7 +162,6 @@
     </button>
 </nav>
 
-<!-- OFF-CANVAS SIDEBAR DRAWER FOR RESPONSIVE PHONES -->
 <div class="offcanvas offcanvas-start bg-white text-dark d-lg-none" tabindex="-1" id="mobileSidebar" style="width: 280px;">
     <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title fw-bold text-dark"><i class="fas fa-gem me-2 text-indigo" style="color: #4f46e5;"></i>Jewelry Shop</h5>
@@ -200,118 +185,20 @@
     </div>
 </div>
 
-<!-- MAIN VIEW CONTENT CONTENT BLOCK -->
 <div class="main-content">
     
-    <!-- Welcome Header Module -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-5 gap-3">
         <div>
-            <h2 class="fw-bold tracking-tight mb-1" style="color: #0f172a;">Manage Orders &amp; Catalog</h2>
-            <p class="text-muted mb-0">View stock item options alongside active customer transaction ledgers.</p>
+            <h2 class="fw-bold tracking-tight mb-1" style="color: #0f172a;">Manage Orders Ledger</h2>
+            <p class="text-muted mb-0">Monitor active client pipeline records and dispatch updates instantly.</p>
         </div>
-        <a href="/orders/create" class="btn btn-indigo px-4 py-2 text-white shadow-sm fw-semibold" style="background-color: #4f46e5; border-color: #4f46e5;">
+        <button type="button" class="btn btn-indigo px-4 py-2 text-white shadow-sm fw-semibold" style="background-color: #4f46e5; border-color: #4f46e5;" data-bs-toggle="modal" data-bs-target="#addOrderModal">
             <i class="fas fa-plus me-2"></i>Add New Order
-        </a>
+        </button>
     </div>
 
-    <div class="row g-4">
-        <!-- Stock Catalog Left Column Layout -->
-        <div class="col-12 col-xl-4">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header bg-white py-4 px-4 border-bottom-0 d-flex align-items-center justify-content-between">
-                    <h5 class="m-0 fw-bold text-dark"><i class="fas fa-boxes text-muted me-2"></i>Available Stock Options</h5>
-                    <span class="badge bg-light text-indigo border px-2.5 py-1.5 fw-semibold" style="color: #4f46e5;">4 Items</span>
-                </div>
-                <div class="card-body p-3 bg-light-subtle">
-                    <div class="row g-3">
-                        
-                        <!-- Item 1: Ring -->
-                        <div class="col-12 col-md-6 col-xl-12">
-                            <div class="card item-card h-100 bg-white shadow-sm">
-                                <div class="item-img-wrapper">
-                                    <span class="badge bg-dark item-category">Ring</span>
-                                    <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80" class="item-img" alt="Luxury Ring">
-                                </div>
-                                <div class="card-body p-3 d-flex flex-column">
-                                    <h6 class="fw-bold text-dark mb-1">Classic Diamond Ring</h6>
-                                    <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.4;">18k white gold band set with a brilliant-cut center diamond stone.</p>
-                                    <div class="mt-auto d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold text-dark">₱45,000.00</span>
-                                        <button type="button" onclick="selectCatalogItem('Ring', 45000)" class="btn btn-sm btn-outline-primary px-2.5 py-1 rounded-3 fw-semibold style-button" style="font-size: 0.75rem; border-color: #e2e8f0; color: #4f46e5;">
-                                            <i class="fas fa-cart-plus me-1"></i>Select
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Item 2: Necklace -->
-                        <div class="col-12 col-md-6 col-xl-12">
-                            <div class="card item-card h-100 bg-white shadow-sm">
-                                <div class="item-img-wrapper">
-                                    <span class="badge bg-dark item-category">Necklace</span>
-                                    <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80" class="item-img" alt="Gold Chain">
-                                </div>
-                                <div class="card-body p-3 d-flex flex-column">
-                                    <h6 class="fw-bold text-dark mb-1">Premium Gold Chain</h6>
-                                    <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.4;">Solid 24k gold interlocking chain mesh meticulously hand-polished.</p>
-                                    <div class="mt-auto d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold text-dark">₱62,000.00</span>
-                                        <button type="button" onclick="selectCatalogItem('Necklace', 62000)" class="btn btn-sm btn-outline-primary px-2.5 py-1 rounded-3 fw-semibold style-button" style="font-size: 0.75rem; border-color: #e2e8f0; color: #4f46e5;">
-                                            <i class="fas fa-cart-plus me-1"></i>Select
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Item 3: Bracelet -->
-                        <div class="col-12 col-md-6 col-xl-12">
-                            <div class="card item-card h-100 bg-white shadow-sm">
-                                <div class="item-img-wrapper">
-                                    <span class="badge bg-dark item-category">Bracelet</span>
-                                    <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&q=80" class="item-img" alt="Silver Bangle">
-                                </div>
-                                <div class="card-body p-3 d-flex flex-column">
-                                    <h6 class="fw-bold text-dark mb-1">Silver Charm Bangle</h6>
-                                    <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.4;">Elegant Sterling 925 silver bracelet with adjustable custom layout anchors.</p>
-                                    <div class="mt-auto d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold text-dark">₱15,500.00</span>
-                                        <button type="button" onclick="selectCatalogItem('Bracelet', 15500)" class="btn btn-sm btn-outline-primary px-2.5 py-1 rounded-3 fw-semibold style-button" style="font-size: 0.75rem; border-color: #e2e8f0; color: #4f46e5;">
-                                            <i class="fas fa-cart-plus me-1"></i>Select
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Item 4: Earrings -->
-                        <div class="col-12 col-md-6 col-xl-12">
-                            <div class="card item-card h-100 bg-white shadow-sm">
-                                <div class="item-img-wrapper">
-                                    <span class="badge bg-dark item-category">Earrings</span>
-                                    <img src="https://images.unsplash.com/photo-1635767798638-3e25273a8236?w=400&q=80" class="item-img" alt="Crystal Drops">
-                                </div>
-                                <div class="card-body p-3 d-flex flex-column">
-                                    <h6 class="fw-bold text-dark mb-1">Crystal Drop Studs</h6>
-                                    <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.4;">Exquisite sapphire chandelier drops optimized for premium gala statement aesthetics.</p>
-                                    <div class="mt-auto d-flex align-items-center justify-content-between">
-                                        <span class="fw-bold text-dark">₱28,000.00</span>
-                                        <button type="button" onclick="selectCatalogItem('Earrings', 28000)" class="btn btn-sm btn-outline-primary px-2.5 py-1 rounded-3 fw-semibold style-button" style="font-size: 0.75rem; border-color: #e2e8f0; color: #4f46e5;">
-                                            <i class="fas fa-cart-plus me-1"></i>Select
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Orders Table Right Column Layout -->
-        <div class="col-12 col-xl-8">
+    <div class="row">
+        <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white py-4 px-4 border-bottom-0 d-flex align-items-center justify-content-between">
                     <h5 class="m-0 fw-bold text-dark"><i class="fas fa-table me-2 text-muted"></i>Orders Ledger Directory</h5>
@@ -389,7 +276,64 @@
             </div>
         </div>
     </div>
-    
+</div>
+
+<div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow" style="border-radius: 16px;">
+            <div class="modal-header px-4 pt-4 border-0">
+                <h5 class="modal-title fw-bold text-dark" id="addOrderModalLabel"><i class="fas fa-cart-plus text-indigo me-2" style="color: #4f46e5;"></i>Create New Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="/orders">
+                @csrf
+                <div class="modal-body px-4 pb-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="customer_name" class="form-label">Customer Full Name</label>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="jewelry_item" class="form-label">Jewelry Configuration Category</label>
+                            <select class="form-select" id="jewelry_item" name="jewelry_item" onchange="updateAutomaticPrice()" required>
+                                <option value="" selected disabled>Select an option...</option>
+                                <option value="Rings">Classic Diamond Ring</option>
+                                <option value="Necklaces">Premium Gold Chain</option>
+                                <option value="Bracelet">Silver Charm Bangle</option>
+                                <option value="Earrings">Crystal Drop Studs</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1" oninput="calculateGrossTotal()" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Unit Base Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0">₱</span>
+                                <input type="number" step="0.01" class="form-control border-start-0 ps-0" id="price" name="price" oninput="calculateGrossTotal()" readonly required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="total_gross" class="form-label">Total Projected Gross</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0 fw-semibold">₱</span>
+                                <input type="text" class="form-control border-start-0 ps-0 bg-light text-dark fw-bold" id="total_gross" readonly value="0.00">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer px-4 pb-4 pt-0 border-0 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light border px-4 py-2 fw-semibold text-secondary" style="border-radius: 10px;" data-bs-dismiss="modal">Discard</button>
+                    <button type="submit" class="btn text-white px-4 py-2 fw-semibold" style="background-color: #4f46e5; border-radius: 10px;">Save Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -403,13 +347,39 @@
         toastr.{{ session('toast_type') }}('{{ session('toast_message') }}');
     @endif
 
+    /* Live Catalog Valuation Registry Lookup object map */
+    const priceCatalog = {
+        "Rings": 45000.00,
+        "Necklaces": 62000.00,
+        "Bracelet": 15500.00,
+        "Earrings": 28000.00
+    };
+
     /**
-     * Automated Selection Handler
-     * Redirects cleanly to the creation form with preset item specifications.
+     * Automatically updates the unit price field based on selector adjustments
      */
-    function selectCatalogItem(itemName, unitPrice) {
-        const createUrl = `/orders/create?item=${encodeURIComponent(itemName)}&price=${unitPrice}`;
-        window.location.href = createUrl;
+    function updateAutomaticPrice() {
+        const selectedItem = document.getElementById('jewelry_item').value;
+        const priceInput = document.getElementById('price');
+        
+        if (selectedItem && priceCatalog[selectedItem]) {
+            priceInput.value = priceCatalog[selectedItem].toFixed(2);
+        } else {
+            priceInput.value = "";
+        }
+        calculateGrossTotal();
+    }
+
+    /**
+     * Multiplies Unit Base Price by Quantity instantly
+     */
+    function calculateGrossTotal() {
+        const unitPrice = parseFloat(document.getElementById('price').value) || 0;
+        const quantity = parseInt(document.getElementById('quantity').value) || 1;
+        const totalGrossDisplay = document.getElementById('total_gross');
+        
+        const dynamicTotal = unitPrice * quantity;
+        totalGrossDisplay.value = dynamicTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 </script>
 </body>
