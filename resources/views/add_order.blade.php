@@ -24,7 +24,6 @@
             min-height: calc(100vh - 73px);
         }
 
-        /* Modern Typography and Components */
         .card { 
             background: #ffffff;
             border: 1px solid #e2e8f0; 
@@ -125,21 +124,6 @@
 
             <form method="POST" action="{{ route('orders.store') }}">
                 @csrf
-                
-                <input type="hidden" id="customer_name" name="customer_name" value="{{ Auth::user()->name }}">
-                
-                <div class="mb-4">
-                    <label class="form-label">Ordering Account Profile</label>
-                    <div class="d-flex align-items-center bg-light border p-3 rounded-3" style="border-radius: 10px !important;">
-                        <div class="rounded-circle text-center me-3" style="background-color: #e0e7ff; color: #4f46e5; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <div>
-                            <span class="d-block fw-bold text-dark" style="font-size: 0.95rem;">{{ Auth::user()->name }}</span>
-                            <small class="text-muted small">This record will be stored automatically under your verified system login profile identity.</small>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="mb-4">
                     <label for="jewelry_item" class="form-label">Jewelry Item Classification</label>
@@ -204,7 +188,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // System Pricing Catalog configuration matching the dashboard stock options
     const priceCatalog = {
         "Ring": 45000.00,
         "Necklace": 62000.00,
@@ -212,9 +195,6 @@
         "Earrings": 28000.00
     };
 
-    /**
-     * Automatically changes the unit price field based on dropdown changes
-     */
     function updateAutomaticPrice() {
         const selectedItem = document.getElementById('jewelry_item').value;
         const priceInput = document.getElementById('price');
@@ -228,9 +208,6 @@
         calculateGrossTotal();
     }
 
-    /**
-     * Multiplies Unit Price by Quantity automatically
-     */
     function calculateGrossTotal() {
         const unitPrice = parseFloat(document.getElementById('price').value) || 0;
         const quantity = parseInt(document.getElementById('quantity').value) || 1;
@@ -240,10 +217,8 @@
         totalGrossDisplay.value = dynamicTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Initialize calculations right away when the template is rendered
     window.addEventListener('DOMContentLoaded', () => {
         if(document.getElementById('jewelry_item').value) {
-            // If loaded with URL parameters, instantly execute structural values
             calculateGrossTotal();
         }
     });
